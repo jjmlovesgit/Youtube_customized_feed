@@ -1,0 +1,226 @@
+[data-ytcf-hidden="true"] {
+  display: none !important;
+}
+
+[data-ytcf-banished="true"] {
+  display: none !important;
+}
+
+/* Keep newly painted or recycled cards hidden until their filters and final
+   CSS sort position have been applied. Mutation observers run before paint. */
+html.ytcf-booting :is(
+  ytd-rich-item-renderer,
+  ytd-video-renderer,
+  ytd-compact-video-renderer,
+  ytd-grid-video-renderer,
+  ytd-playlist-renderer,
+  ytd-radio-renderer,
+  ytd-podcast-renderer,
+  ytd-podcast-show-renderer,
+  ytd-reel-item-renderer,
+  ytd-reel-video-renderer,
+  yt-shorts-lockup-view-model,
+  ytm-shorts-lockup-view-model,
+  ytm-shorts-lockup-view-model-v2,
+  yt-lockup-view-model,
+  ytd-feed-filter-chip-bar-renderer,
+  ytd-related-chip-cloud-renderer,
+  yt-chip-cloud-renderer,
+  ytd-horizontal-card-list-renderer,
+  ytd-rich-section-renderer,
+  ytd-rich-shelf-renderer,
+  ytd-reel-shelf-renderer,
+  ytd-shorts-shelf-renderer,
+  ytd-podcast-shelf-renderer,
+  ytd-backstage-post-thread-renderer,
+  ytd-backstage-post-renderer,
+  ytd-post-renderer,
+  yt-post-lockup-view-model,
+  #chips-wrapper
+),
+html.ytcf-sort-active :is(
+  ytd-rich-item-renderer,
+  ytd-video-renderer,
+  ytd-compact-video-renderer,
+  ytd-grid-video-renderer,
+  ytd-playlist-renderer,
+  ytd-radio-renderer,
+  ytd-podcast-renderer,
+  ytd-podcast-show-renderer,
+  ytd-reel-item-renderer,
+  ytd-reel-video-renderer,
+  yt-shorts-lockup-view-model,
+  ytm-shorts-lockup-view-model,
+  ytm-shorts-lockup-view-model-v2,
+  yt-lockup-view-model,
+  ytd-feed-filter-chip-bar-renderer,
+  ytd-related-chip-cloud-renderer,
+  yt-chip-cloud-renderer,
+  ytd-horizontal-card-list-renderer,
+  ytd-rich-section-renderer,
+  ytd-rich-shelf-renderer,
+  ytd-reel-shelf-renderer,
+  ytd-shorts-shelf-renderer,
+  ytd-podcast-shelf-renderer,
+  ytd-backstage-post-thread-renderer,
+  ytd-backstage-post-renderer,
+  ytd-post-renderer,
+  yt-post-lockup-view-model,
+  #chips-wrapper
+):not([data-ytcf-evaluated="true"]) {
+  visibility: hidden !important;
+}
+
+.ytcf-block-button-host {
+  position: relative !important;
+  pointer-events: auto !important;
+}
+
+.ytcf-block-channel-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border: 1px solid rgba(239, 68, 68, 0.55);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  color: #fca5a5;
+  font: 600 11px/1.4 Roboto, Arial, sans-serif;
+  cursor: pointer;
+  pointer-events: auto !important;
+  user-select: none;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.ytcf-block-channel-btn:hover:not(:disabled),
+.ytcf-block-channel-btn:focus-visible:not(:disabled) {
+  border-color: #ef4444;
+  background: #dc2626;
+  color: #fff;
+  outline: none;
+  transform: scale(1.04);
+}
+
+.ytcf-block-channel-btn[data-ytcf-busy="true"] {
+  cursor: wait;
+  opacity: 0.82;
+}
+
+body.ytcf-suppress-popup ytd-menu-popup-renderer,
+body.ytcf-suppress-popup tp-yt-iron-dropdown {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ytcf-card-banishing {
+  opacity: 0 !important;
+  transform: scale(0.92) !important;
+  pointer-events: none !important;
+  transition: opacity 300ms ease, transform 300ms ease !important;
+}
+
+/* Flat-feed mode: keep only the primary video stream, remove YouTube's
+   supplemental shelves, and render Home as a single newest-first column. */
+html.ytcf-sort-active :is(
+  ytd-feed-filter-chip-bar-renderer,
+  ytd-related-chip-cloud-renderer,
+  yt-chip-cloud-renderer,
+  #chips-wrapper,
+  ytd-horizontal-card-list-renderer,
+  ytd-shelf-renderer,
+  ytd-reel-shelf-renderer,
+  ytd-shorts-shelf-renderer,
+  ytd-podcast-shelf-renderer
+) {
+  display: none !important;
+}
+
+/* Hiding Home's chip bar removes YouTube's space below the fixed masthead.
+   Restore one thumbnail-height of breathing room so the first card is fully
+   visible instead of beginning underneath the header. */
+html.ytcf-sort-active.ytcf-home-feed ytd-rich-grid-renderer {
+  padding-top: 48px !important;
+}
+
+html.ytcf-sort-active ytd-rich-grid-renderer ytd-rich-item-renderer {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 16px !important;
+}
+
+/* If YouTube introduces another card wrapper before its title is hydrated,
+   keep the native card thumbnail-sized instead of allowing a full-page image. */
+html.ytcf-sort-active ytd-rich-grid-renderer ytd-rich-item-renderer[data-ytcf-compact-card="true"]:not([data-ytcf-compact-row="true"]) {
+  width: 360px !important;
+  max-width: min(360px, 100%) !important;
+  justify-self: start !important;
+}
+
+html.ytcf-sort-active ytd-rich-item-renderer > #content,
+html.ytcf-sort-active ytd-rich-item-renderer ytd-rich-grid-media {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+html.ytcf-sort-active [data-ytcf-row-shell="true"] {
+  display: grid !important;
+  grid-template-columns: 320px minmax(0, 1fr) !important;
+  align-items: start !important;
+  column-gap: 16px !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+html.ytcf-sort-active [data-ytcf-row-thumbnail="true"] {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+}
+
+html.ytcf-sort-active [data-ytcf-row-thumbnail="true"] :is(
+  ytd-thumbnail,
+  yt-thumbnail-view-model,
+  #thumbnail-container,
+  a#thumbnail,
+  img
+) {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+html.ytcf-sort-active [data-ytcf-row-details="true"] {
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 800px) {
+  html.ytcf-sort-active [data-ytcf-row-shell="true"] {
+    grid-template-columns: 168px minmax(0, 1fr) !important;
+    column-gap: 12px !important;
+  }
+
+  html.ytcf-sort-active [data-ytcf-row-thumbnail="true"] {
+    width: 168px !important;
+    min-width: 168px !important;
+    max-width: 168px !important;
+  }
+}
+
+/* CSS ordering keeps YouTube's renderer nodes in place. Moving those nodes
+   causes its SPA reconciler to call insertBefore with stale parents. */
+html.ytcf-sort-active [data-ytcf-sort-container="column"] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html.ytcf-sort-active [data-ytcf-sort-container="row"] {
+  display: flex !important;
+  flex-direction: row !important;
+}

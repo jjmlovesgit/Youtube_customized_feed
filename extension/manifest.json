@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "YT Custom Feed",
+  "version": "0.1.0",
+  "description": "Choose which kinds of videos and shelves appear in your YouTube feed.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "split-player-worker.js"
+  },
+  "action": {
+    "default_title": "Customize this YouTube feed",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://youtube.com/*"
+      ],
+      "js": [
+        "filter-rules.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

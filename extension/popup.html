@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YT Custom Feed</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="brand-row">
+      <div class="mark" aria-hidden="true"><span></span></div>
+      <div>
+        <p class="eyebrow">YouTube, your way</p>
+        <h1>Custom Feed</h1>
+      </div>
+    </div>
+    <label class="master-row" for="enabled">
+      <span>
+        <strong>Feed filters</strong>
+        <small id="master-copy">On · YouTube order</small>
+      </span>
+      <span class="switch">
+        <input id="enabled" data-setting="enabled" type="checkbox">
+        <span class="track" aria-hidden="true"></span>
+      </span>
+    </label>
+  </header>
+
+  <main>
+    <section aria-labelledby="content-heading">
+      <div class="section-heading">
+        <h2 id="content-heading">Hide from my feed</h2>
+        <span>On to hide</span>
+      </div>
+
+      <label class="setting-row" for="hideMusic">
+        <span class="setting-icon music" aria-hidden="true">♫</span>
+        <span class="setting-copy"><strong>Music &amp; playlists</strong><small>Mixes, albums, and artist uploads</small></span>
+        <span class="switch"><input id="hideMusic" data-setting="hideMusic" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+      <label class="setting-row" for="hidePodcasts">
+        <span class="setting-icon podcasts" aria-hidden="true">◉</span>
+        <span class="setting-copy"><strong>Podcasts</strong><small>Podcast videos, shows, and shelves</small></span>
+        <span class="switch"><input id="hidePodcasts" data-setting="hidePodcasts" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+      <label class="setting-row" for="hideShorts">
+        <span class="setting-icon shorts" aria-hidden="true">▶</span>
+        <span class="setting-copy"><strong>YouTube Shorts</strong><small>Shorts cards and shelves</small></span>
+        <span class="switch"><input id="hideShorts" data-setting="hideShorts" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+      <label class="setting-row" for="hidePosts">
+        <span class="setting-icon posts" aria-hidden="true">▤</span>
+        <span class="setting-copy"><strong>Community posts</strong><small>Text, image, and poll posts</small></span>
+        <span class="switch"><input id="hidePosts" data-setting="hidePosts" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+      <label class="setting-row" for="hideTopics">
+        <span class="setting-icon topics" aria-hidden="true">#</span>
+        <span class="setting-copy"><strong>Topics &amp; chip bar</strong><small>Filter ribbons above video results</small></span>
+        <span class="switch"><input id="hideTopics" data-setting="hideTopics" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+      <label class="setting-row" for="hideExploreMore">
+        <span class="setting-icon topics" aria-hidden="true">×</span>
+        <span class="setting-copy"><strong>Explore more topics</strong><small>Hide the shelf with YouTube's Not interested control</small></span>
+        <span class="switch"><input id="hideExploreMore" data-setting="hideExploreMore" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+    </section>
+
+    <section aria-labelledby="age-heading">
+      <div class="section-heading">
+        <h2 id="age-heading">Filter by age</h2>
+        <span>Publication date</span>
+      </div>
+
+      <label class="setting-row" for="hideOlderThan1Yr">
+        <span class="setting-icon age" aria-hidden="true">↥</span>
+        <span class="setting-copy"><strong>Hide older videos</strong><small>Published more than 1 year ago</small></span>
+        <span class="switch"><input id="hideOlderThan1Yr" data-setting="hideOlderThan1Yr" type="checkbox"><span class="track" aria-hidden="true"></span></span>
+      </label>
+
+    </section>
+  </main>
+
+  <footer>
+    <p id="status" class="status" aria-live="polite"><span class="status-dot"></span><span>Connecting to YouTube…</span></p>
+    <button id="reset" type="button">Reset all</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
