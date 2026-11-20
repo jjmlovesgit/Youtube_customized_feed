@@ -5,3 +5,4 @@ __pycache__/
 models/
 server.stdout.log
 server.stderr.log
+extension/lib/transformers.web.min.js

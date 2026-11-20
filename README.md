@@ -31,6 +31,10 @@ For development in this repository, load `C:\Projects\YT_Custom_Feed\extension` 
 
 ## Use it
 
+The toolbar popup shows the master switch, category filters, age filter, hidden-item count, and reset button:
+
+![YT Custom Feed popup with Feed filters enabled and switches for music, podcasts, Shorts, community posts, topics, and older videos](docs/images/extension-popup.png)
+
 - **Feed filters** is the master switch. With it on, loaded video feeds appear as a plain list, newest first. Turn it off to temporarily restore YouTube's layout and order. Your individual choices are retained.
 - Turn a category switch **on** to hide that category: music and playlists, podcasts, Shorts, community posts, the topic chip bar, or the **Explore more topics** shelf.
 - **Hide older videos** removes videos whose displayed publication age is more than one year. Items without a usable date remain at the bottom of the sorted list.
