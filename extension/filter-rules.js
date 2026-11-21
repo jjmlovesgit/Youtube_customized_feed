@@ -9,6 +9,7 @@
     hidePosts: false,
     hideTopics: false,
     hideExploreMore: false,
+    hideSponsored: false,
     hideOlderThan1Yr: false,
   });
 
@@ -60,6 +61,10 @@
       /\bpodcasts?\b/i.test(`${meta.title || ''} ${meta.channel || ''} ${meta.metadata || ''}`);
   }
 
+  function isSponsored(meta = {}) {
+    return Boolean(meta.hasSponsoredBadge);
+  }
+
   function isBaitTitle(title) {
     const value = String(title || '').trim();
     if (!value) return false;
@@ -103,6 +108,7 @@
     isBaitTitle,
     isMusicOrPlaylist,
     isPodcast,
+    isSponsored,
     isShort,
   });
 })();

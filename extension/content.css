@@ -36,6 +36,12 @@ html.ytcf-booting :is(
   ytd-backstage-post-renderer,
   ytd-post-renderer,
   yt-post-lockup-view-model,
+  ytd-ad-slot-renderer,
+  ytd-promoted-video-renderer,
+  ytd-promoted-sparkles-web-renderer,
+  ytd-display-ad-renderer,
+  ytd-in-feed-ad-layout-renderer,
+  ytd-search-pyv-renderer,
   #chips-wrapper
 ),
 html.ytcf-sort-active :is(
@@ -66,6 +72,12 @@ html.ytcf-sort-active :is(
   ytd-backstage-post-renderer,
   ytd-post-renderer,
   yt-post-lockup-view-model,
+  ytd-ad-slot-renderer,
+  ytd-promoted-video-renderer,
+  ytd-promoted-sparkles-web-renderer,
+  ytd-display-ad-renderer,
+  ytd-in-feed-ad-layout-renderer,
+  ytd-search-pyv-renderer,
   #chips-wrapper
 ):not([data-ytcf-evaluated="true"]) {
   visibility: hidden !important;

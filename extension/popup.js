@@ -11,6 +11,7 @@
     hidePosts: false,
     hideTopics: false,
     hideExploreMore: false,
+    hideSponsored: false,
     hideOlderThan1Yr: false,
   };
 

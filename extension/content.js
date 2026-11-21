@@ -38,6 +38,14 @@
     'ytd-post-renderer',
     'yt-post-lockup-view-model',
   ].join(', ');
+  const AD_SELECTOR = [
+    'ytd-ad-slot-renderer',
+    'ytd-promoted-video-renderer',
+    'ytd-promoted-sparkles-web-renderer',
+    'ytd-display-ad-renderer',
+    'ytd-in-feed-ad-layout-renderer',
+    'ytd-search-pyv-renderer',
+  ].join(', ');
   const SPECIAL_SECTION_SELECTOR = [
     'ytd-feed-filter-chip-bar-renderer',
     'ytd-related-chip-cloud-renderer',
@@ -49,6 +57,7 @@
     'ytd-shorts-shelf-renderer',
     'ytd-podcast-shelf-renderer',
     POST_SELECTOR,
+    AD_SELECTOR,
     '#chips-wrapper',
   ].join(', ');
 
@@ -348,6 +357,20 @@
     return cleanText(pieces.filter(Boolean).join(' '));
   }
 
+  function hasSponsoredBadge(card) {
+    const badges = card.querySelectorAll?.(
+      '[aria-label="Sponsored" i], [title="Sponsored" i], ' +
+      'ytd-badge-supported-renderer, badge-shape, ' +
+      '[class*="metadata-line" i], [class*="metadata-text" i]',
+    ) || [];
+    return Array.from(badges).some((badge) => [
+        badge.getAttribute?.('aria-label'),
+        badge.getAttribute?.('title'),
+        badge.innerText,
+        badge.textContent,
+      ].some((value) => /^sponsored(?:\s*[·•]|$)/i.test(cleanText(value))));
+  }
+
   function cardMetadata(card) {
     const title = firstText(card, '#video-title, #video-title-link, .yt-lockup-metadata-view-model-wiz__title, h3, [role="heading"]');
     const channel = firstText(card, '#channel-name, .ytd-channel-name, [class*="channel-name"], [class*="metadata"] a');
@@ -399,6 +422,7 @@
         'a[href*="/podcast"], [aria-label*="podcast" i], [title*="podcast" i]',
       )),
       hasArtistBadge: Boolean(card.querySelector?.('[aria-label*="Official Artist Channel"], yt-icon[icon="official-artist"]')),
+      hasSponsoredBadge: hasSponsoredBadge(card),
     };
   }
 
@@ -419,8 +443,8 @@
     ].includes(tagName);
   }
 
-  function postLayoutTarget(element) {
-    if (!isPostElement(element)) return element;
+  function sectionLayoutTarget(element) {
+    if (!isPostElement(element) && !element.matches?.(AD_SELECTOR)) return element;
     return element.closest?.('ytd-rich-item-renderer, ytd-video-renderer') || element;
   }
 
@@ -690,6 +714,7 @@
     if (settings.hideShorts && rules.isShort(meta)) reasons.push('shorts');
     if (settings.hideMusic && rules.isMusicOrPlaylist(meta)) reasons.push('music');
     if (settings.hidePodcasts && rules.isPodcast(meta)) reasons.push('podcasts');
+    if (settings.hideSponsored && rules.isSponsored(meta)) reasons.push('sponsored');
     if (settings.hideBait && rules.isBaitTitle(meta.title)) reasons.push('bait');
     const age = rules.ageCategory(meta.metadata);
     if (settings.hideOlderThan1Yr && age === 'older') reasons.push('older-than-one-year');
@@ -786,6 +811,7 @@
     if (settings.hideTopics && isTopicElement(element)) reasons.push('topics');
     if (settings.hideExploreMore && isExploreMoreElement(element)) reasons.push('explore-more-topics');
     if (settings.hidePosts && isPostElement(element)) reasons.push('posts');
+    if (settings.hideSponsored && element.matches?.(AD_SELECTOR)) reasons.push('sponsored');
 
     const tagName = String(element.tagName || '').toLowerCase();
     const isShortsShelf = tagName === 'ytd-reel-shelf-renderer' || tagName === 'ytd-shorts-shelf-renderer';
@@ -852,7 +878,7 @@
     const specialTargets = new Map();
     const sections = Array.from(document.querySelectorAll?.(SPECIAL_SECTION_SELECTOR) || []);
     for (const section of sections) {
-      const target = postLayoutTarget(section);
+      const target = sectionLayoutTarget(section);
       if (!fullPass && section.dataset?.ytcfEvaluated === 'true' && target.dataset?.ytcfEvaluated === 'true') continue;
       const reasons = specialTargets.get(target) || [];
       for (const reason of specialSectionReasons(section)) {
@@ -877,7 +903,7 @@
       }
     }
     for (const section of sections) {
-      const target = postLayoutTarget(section);
+      const target = sectionLayoutTarget(section);
       if (fullPass || specialTargets.has(target)) {
         section.dataset.ytcfEvaluated = 'true';
         target.dataset.ytcfEvaluated = 'true';

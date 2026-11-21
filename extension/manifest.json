@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YT Custom Feed",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Choose which kinds of videos and shelves appear in your YouTube feed.",
   "permissions": [
     "storage",

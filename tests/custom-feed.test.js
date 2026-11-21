@@ -28,6 +28,7 @@ test('feed rules recognize the reference feed categories', async () => {
   assert.equal(rules.DEFAULT_SETTINGS.hidePosts, false);
   assert.equal(rules.DEFAULT_SETTINGS.hidePodcasts, false);
   assert.equal(rules.DEFAULT_SETTINGS.hideExploreMore, false);
+  assert.equal(rules.DEFAULT_SETTINGS.hideSponsored, false);
   assert.equal('hideBait' in rules.DEFAULT_SETTINGS, false);
   assert.equal('hideForeignScript' in rules.DEFAULT_SETTINGS, false);
   assert.equal('hideNewerThan1Yr' in rules.DEFAULT_SETTINGS, false);
@@ -47,6 +48,9 @@ test('feed rules recognize the reference feed categories', async () => {
   assert.equal(rules.isPodcast({ tagName: 'ytd-video-renderer', hasPodcastMarkup: true }), true);
   assert.equal(rules.isPodcast({ tagName: 'ytd-video-renderer', title: 'The Web Platform Podcast' }), true);
   assert.equal(rules.isPodcast({ tagName: 'ytd-video-renderer', title: 'Build a desk from plywood' }), false);
+
+  assert.equal(rules.isSponsored({ hasSponsoredBadge: true }), true);
+  assert.equal(rules.isSponsored({ title: 'Sponsored results explained' }), false);
 
   assert.equal(rules.isBaitTitle("You WON'T BELIEVE what happens next"), true);
   assert.equal(rules.isBaitTitle('How to repair a bicycle wheel'), false);
@@ -75,6 +79,7 @@ test('popup exposes active filters while keeping the bait classifier code parked
     'hidePosts',
     'hideTopics',
     'hideExploreMore',
+    'hideSponsored',
     'hideOlderThan1Yr',
   ]) {
     assert.match(html, new RegExp(`data-setting="${setting}"`));
@@ -100,6 +105,7 @@ test('every popup toggle persists and sends its complete settings state', async 
     'hidePosts',
     'hideTopics',
     'hideExploreMore',
+    'hideSponsored',
     'hideOlderThan1Yr',
   ];
   const inputs = settingNames.map((setting) => ({
@@ -765,6 +771,75 @@ test('Posts toggle hides and restores a Home community post card', async () => {
   );
   assert.equal(outerCard.dataset.ytcfHidden, undefined);
   assert.equal(outerCard.dataset.ytcfReasons, undefined);
+});
+
+test('Sponsored toggle hides ad wrappers and labeled cards without hiding ordinary titles', async () => {
+  const rulesSource = await readFile(new URL('../extension/filter-rules.js', import.meta.url), 'utf8');
+  const contentSource = await readFile(new URL('../extension/content.js', import.meta.url), 'utf8');
+  let messageListener;
+  const adGridItem = { dataset: {} };
+  const adSlot = {
+    tagName: 'YTD-AD-SLOT-RENDERER',
+    dataset: {},
+    matches(selector) { return selector.includes('ytd-ad-slot-renderer'); },
+    closest(selector) { return selector.includes('ytd-rich-item-renderer') ? adGridItem : null; },
+    querySelector() { return null; },
+  };
+  function makeCard(title, badgeText) {
+    return {
+      tagName: 'YTD-VIDEO-RENDERER',
+      dataset: {},
+      style: { removeProperty() {} },
+      parentElement: {},
+      textContent: title,
+      innerText: title,
+      closest(selector) { return selector.includes('ytd-video-renderer') ? this : null; },
+      querySelector(selector) {
+        if (selector.startsWith('#video-title')) return { textContent: title, getAttribute() { return ''; } };
+        if (selector.includes('a[href*="/watch"]')) return { getAttribute() { return '/watch?v=abcdefghijk'; } };
+        return null;
+      },
+      querySelectorAll(selector) {
+        if (selector.includes('[aria-label="Sponsored"')) {
+          return badgeText ? [{ textContent: badgeText, getAttribute() { return ''; } }] : [];
+        }
+        return [];
+      },
+    };
+  }
+  const sponsoredCard = makeCard('Launch your website', 'Sponsored · Base44');
+  const ordinaryCard = makeCard('Sponsored results explained', '');
+  const document = {
+    documentElement: { classList: { add() {}, remove() {}, toggle() {} } },
+    querySelectorAll(selector) {
+      if (selector === '[data-ytcf-hidden="true"]') {
+        return [adGridItem, adSlot, sponsoredCard, ordinaryCard].filter((item) => item.dataset.ytcfHidden);
+      }
+      if (selector.includes('ytd-feed-filter-chip-bar-renderer')) return [adSlot];
+      if (selector.includes('ytd-rich-item-renderer')) return [sponsoredCard, ordinaryCard];
+      return [];
+    },
+    addEventListener() {},
+  };
+  const chrome = {
+    runtime: { onMessage: { addListener(listener) { messageListener = listener; } } },
+    storage: {
+      local: { get(_defaults, callback) { callback({ ytCustomFeedSettings: { enabled: true, hideSponsored: true } }); } },
+      onChanged: { addListener() {} },
+    },
+  };
+  class MutationObserver { observe() {} }
+  const context = vm.createContext({ chrome, clearTimeout, console, document, MutationObserver, setTimeout });
+  vm.runInContext(rulesSource, context);
+  vm.runInContext(contentSource, context);
+
+  assert.equal(adGridItem.dataset.ytcfReasons, 'sponsored');
+  assert.equal(sponsoredCard.dataset.ytcfReasons, 'sponsored');
+  assert.equal(ordinaryCard.dataset.ytcfHidden, undefined);
+
+  messageListener({ type: 'YTCF_APPLY_SETTINGS', settings: { enabled: true, hideSponsored: false } }, null, () => {});
+  assert.equal(adGridItem.dataset.ytcfHidden, undefined);
+  assert.equal(sponsoredCard.dataset.ytcfHidden, undefined);
 });
 
 test('Block Channel badge invokes YouTube native recommendation feedback', async () => {

@@ -137,6 +137,7 @@ h2 {
 .setting-icon.shorts { color: #fb7185; font-size: 11px; }
 .setting-icon.posts { color: #fbbf24; }
 .setting-icon.topics { color: #86efac; }
+.setting-icon.sponsored { color: #fda4af; }
 .setting-icon.age { color: #fdba74; }
 
 .setting-copy { flex: 1 1 auto; min-width: 0; }

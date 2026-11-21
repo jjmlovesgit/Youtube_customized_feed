@@ -1,6 +1,6 @@
 # YT Custom Feed
 
-Version 0.1.0 — a Chrome extension for a simpler YouTube feed.
+Version 0.1.1 — a Chrome extension for a simpler YouTube feed.
 
 YT Custom Feed is a small Manifest V3 Chrome extension that lets you choose what appears in YouTube feeds from a toolbar popup. Settings apply immediately and persist locally in Chrome.
 
@@ -14,6 +14,7 @@ The first version carries forward the feed categories exposed by the reference S
 - community text, image, and poll posts
 - topic shelves and the chip bar
 - the **Explore more topics** shelf and its **Not interested** control
+- sponsored video cards and ad slots
 - videos older than one year
 - every loaded video feed sorted from newest to oldest
 
@@ -21,7 +22,7 @@ While the main switch is on, the extension removes YouTube's supplemental shelve
 
 ## Install from the shared ZIP
 
-1. Download `YT_Custom_Feed-0.1.0.zip` and extract it to a folder you will keep. Chrome needs the extracted files to remain in place.
+1. Download `YT_Custom_Feed-0.1.1.zip` and extract it to a folder you will keep. Chrome needs the extracted files to remain in place.
 2. Open `chrome://extensions` in Chrome and turn on **Developer mode** in the top-right corner.
 3. Click **Load unpacked** and select the extracted **extension** folder (the folder containing `manifest.json`). Do not select the ZIP or its parent folder.
 4. Pin **YT Custom Feed** from Chrome's Extensions (puzzle-piece) menu so its button is easy to find.
@@ -33,10 +34,11 @@ For development in this repository, load `C:\Projects\YT_Custom_Feed\extension` 
 
 The toolbar popup shows the master switch, category filters, age filter, hidden-item count, and reset button:
 
-![YT Custom Feed popup with Feed filters enabled and switches for music, podcasts, Shorts, community posts, topics, and older videos](docs/images/extension-popup.png)
+![YT Custom Feed popup with Feed filters enabled and switches for music, podcasts, Shorts, community posts, topics, sponsored videos, and older videos](docs/images/extension-popup.png)
 
 - **Feed filters** is the master switch. With it on, loaded video feeds appear as a plain list, newest first. Turn it off to temporarily restore YouTube's layout and order. Your individual choices are retained.
-- Turn a category switch **on** to hide that category: music and playlists, podcasts, Shorts, community posts, the topic chip bar, or the **Explore more topics** shelf.
+- Turn a category switch **on** to hide that category: music and playlists, podcasts, Shorts, community posts, the topic chip bar, the **Explore more topics** shelf, or sponsored videos.
+- **Sponsored videos** hides detected ad slots and promoted cards in YouTube feeds. It does not affect ads that play inside a video.
 - **Hide older videos** removes videos whose displayed publication age is more than one year. Items without a usable date remain at the bottom of the sorted list.
 - Click a video in the feed to open its normal YouTube watch page beside the feed. Further clicks reuse the player pane. On Chrome versions without Split View support, the extension arranges two windows side by side.
 - Hover over a video card and click **🚫 Block Channel** to stop seeing that channel. On recommendation pages this uses YouTube's **Don't recommend channel** action; on Search it uses a local block list.
@@ -53,7 +55,7 @@ Settings are stored in Chrome on your computer. The extension does not require a
 
 ## How it works
 
-The extension runs `filter-rules.js` and `content.js` inside YouTube pages. It does not replace YouTube or fetch a separate feed. Instead, it reads the video cards and shelves that YouTube has already put in the page's DOM. For each card it gathers the title, channel, link, badges, renderer type, and displayed age. Local rules classify music, playlists, podcasts, Shorts, and older videos. It also inspects shelf and post elements separately.
+The extension runs `filter-rules.js` and `content.js` inside YouTube pages. It does not replace YouTube or fetch a separate feed. Instead, it reads the video cards and shelves that YouTube has already put in the page's DOM. For each card it gathers the title, channel, link, badges, renderer type, and displayed age. Local rules classify music, playlists, podcasts, Shorts, and older videos. It also inspects shelf, post, and ad elements separately. The sponsored filter checks ad wrappers and sponsored metadata labels rather than words in video titles.
 
 When a filter matches, the content script marks the card or section with a `data-ytcf-hidden` attribute. `content.css` hides marked elements with `display: none`. The enabled view also uses CSS to hide supplemental shelves and chips and to turn Home's video grid into a single-column list with thumbnail-and-details rows. YouTube's main card and section nodes stay in place, which lets YouTube continue updating its own page.
 
